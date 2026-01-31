@@ -1,48 +1,108 @@
 <!DOCTYPE html>
-<html lang="ml">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>YouTube Pro</title>
 <style>
-    body, html { margin:0; padding:0; height:100%; overflow:hidden; background:black; color: white; text-align: center; font-family: sans-serif; }
-    #error-screen { display: none; height: 100vh; justify-content: center; align-items: center; padding: 20px; }
-    #splash { width:100%; height:100vh; object-fit:cover; position:absolute; z-index:10; display:none; }
+    /* Basic Reset */
+    body, html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        overflow: hidden;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #111; /* dark background */
+        color: #fff;
+        text-align: center;
+    }
+
+    /* Error Screen */
+    #error-screen {
+        display: none;
+        height: 100vh;
+        width: 100%;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        background: linear-gradient(135deg, #ff4b2b, #ff416c); /* red gradient */
+        color: white;
+        font-size: 1.3rem;
+        font-weight: bold;
+        padding: 20px;
+    }
+
+    #error-screen h2 {
+        font-size: 2rem;
+        margin-bottom: 15px;
+    }
+
+    #error-screen p {
+        font-size: 1.2rem;
+    }
+
+    /* Splash Video */
+    #splash {
+        width: 100%;
+        height: 100vh;
+        object-fit: cover;
+        position: absolute;
+        z-index: 10;
+        display: none;
+    }
+
+    /* Optional: add a small overlay text on splash */
+    #splash-text {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: #ff4b2b;
+        font-size: 2rem;
+        font-weight: bold;
+        text-shadow: 2px 2px 8px #000;
+        z-index: 20;
+    }
 </style>
 </head>
 <body>
 
 <div id="error-screen">
     <h2>Access Denied!</h2>
-    <p>ഈ ആപ്പ് ഉപയോഗിക്കാൻ ദയവായി Firefox ഉപയോഗിക്കുക.</p>
+    <p>Please use Firefox to access this app.</p>
 </div>
 
 <video id="splash" autoplay muted playsinline>
     <source src="logo123.mp4" type="video/mp4">
 </video>
 
+<div id="splash-text">YouTube Pro</div>
+
 <script>
 const video = document.getElementById('splash');
 const errorScreen = document.getElementById('error-screen');
+const splashText = document.getElementById('splash-text');
 
 const userAgent = navigator.userAgent.toLowerCase();
 const isFirefox = userAgent.includes("firefox");
 
 if (isFirefox) {
     video.style.display = 'block';
+    splashText.style.display = 'block';
 
     function openYT() {
-        // Iframe ഒഴിവാക്കി നേരിട്ട് യൂട്യൂബ് ലോഡ് ചെയ്യുന്നു
+        // Redirect to YouTube mobile site
         window.location.replace("https://m.youtube.com");
     }
 
     video.addEventListener('ended', openYT);
     video.addEventListener('error', openYT);
-    setTimeout(openYT, 6000); 
+    setTimeout(openYT, 6000); // fallback in case video doesn't play
 
 } else {
     errorScreen.style.display = 'flex';
     video.remove();
+    splashText.remove();
 }
 </script>
 </body>
