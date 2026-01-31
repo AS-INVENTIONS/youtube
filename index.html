@@ -1,49 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>YouTube Pro</title>
-<style>
-body, html { margin:0; padding:0; height:100%; overflow:hidden; background:black; font-family: system-ui, -apple-system, sans-serif; }
-#splash { width:100%; height:100vh; object-fit:cover; position:absolute; z-index:10; }
-.overlay { position:absolute; top:0; left:0; width:100%; height:72px; background:black; z-index:20; pointer-events:none; display:none; }
-#yt-frame { width:100%; height:100vh; border:none; display:none; z-index:5; position:absolute; top:0; left:0; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>YouTube Pro</title>
+    <style>
+        body, html { 
+            margin: 0; padding: 0; height: 100%; overflow: hidden; background: black; 
+        }
+
+        /* സ്പ്ലാഷ് വീഡിയോ */
+        #splash { 
+            width: 100%; height: 100vh; object-fit: cover; 
+            position: absolute; z-index: 30; 
+        }
+
+        /* സെർച്ച് ബാർ മറയ്ക്കാനുള്ള കറുത്ത ഓവർലേ */
+        .top-overlay { 
+            position: absolute; top: 0; left: 0; width: 100%; height: 65px; 
+            background: black; z-index: 20; pointer-events: none; display: none; 
+        }
+
+        /* യൂട്യൂബ് കണ്ടന്റ് */
+        #yt-frame { 
+            width: 100%; height: 100vh; border: none; 
+            display: none; position: absolute; top: 0; left: 0; z-index: 10; 
+        }
+    </style>
 </head>
 <body>
 
-<video id="splash" autoplay muted playsinline>
-    <source src="logo123.mp4" type="video/mp4">
-</video>
+    <video id="splash" autoplay muted playsinline>
+        <source src="logo123.mp4" type="video/mp4">
+    </video>
 
-<div id="top-overlay" class="overlay"></div>
+    <div id="overlay" class="top-overlay"></div>
 
-<iframe id="yt-frame" src="https://m.youtube.com"></iframe>
+    <iframe id="yt-frame" src="https://www.youtube.com/embed?rel=0&showinfo=0&autohide=1"></iframe>
 
-<script>
-const video = document.getElementById('splash');
-const iframe = document.getElementById('yt-frame');
-const overlay = document.getElementById('top-overlay');
-let splashHandled = false;
+    <script>
+        const video = document.getElementById('splash');
+        const iframe = document.getElementById('yt-frame');
+        const overlay = document.getElementById('overlay');
 
-function showMainApp(){
-    if(splashHandled) return;
-    splashHandled = true;
-    video.style.display = 'none';
-    iframe.style.display = 'block';
-    overlay.style.display = 'block';
-}
+        function startApp() {
+            video.style.display = 'none'; // വീഡിയോ മറയ്ക്കുന്നു
+            iframe.style.display = 'block'; // യൂട്യൂബ് കാണിക്കുന്നു
+            overlay.style.display = 'block'; // ഓവർലേ കാണിക്കുന്നു
+        }
 
-// വീഡിയോ തീർന്നാലോ എറർ വന്നാലോ ആപ്പ് കാണിക്കുക
-video.addEventListener('ended', showMainApp);
-video.addEventListener('error', showMainApp);
+        // വീഡിയോ അവസാനിക്കുമ്പോൾ ആപ്പ് ലോഡ് ചെയ്യും
+        video.addEventListener('ended', startApp);
 
-// 7 സെക്കൻഡിനുള്ളിൽ വീഡിയോ പ്ലേ ആയില്ലെങ്കിൽ ബാക്കപ്പ്
-setTimeout(() => {
-    if(!splashHandled) showMainApp();
-}, 7000);
-</script>
+        // എന്തെങ്കിലും കാരണവശാൽ വീഡിയോ ലോഡ് ആയില്ലെങ്കിൽ 6 സെക്കൻഡിൽ ആപ്പ് ലോഡ് ചെയ്യും
+        setTimeout(() => {
+            if(video.style.display !== 'none') startApp();
+        }, 6000);
+
+        // വീഡിയോയിൽ എറർ വന്നാലും ആപ്പ് ലോഡ് ചെയ്യും
+        video.addEventListener('error', startApp);
+    </script>
 
 </body>
 </html>
