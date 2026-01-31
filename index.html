@@ -1,48 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>YouTube Pro</title>
-    <style>
-        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background: black; }
-        #splash { width: 100%; height: 100vh; object-fit: cover; position: absolute; z-index: 30; }
-        
-        /* സെർച്ച് ബട്ടൺ മറയ്ക്കാനുള്ള കറുത്ത ബാർ */
-        .top-overlay { 
-            position: absolute; top: 0; left: 0; width: 100%; height: 70px; 
-            background: black; z-index: 20; pointer-events: none; display: none; 
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>YT Pro</title>
+<style>
+    body, html { margin:0; padding:0; height:100%; overflow:hidden; background:black; }
+    #splash { width:100%; height:100vh; object-fit:cover; position:absolute; z-index:30; }
+    
+    /* സെർച്ച് ബാർ മറയ്ക്കാനുള്ള ഓവർലേ */
+    .top-overlay { 
+        position:absolute; top:0; left:0; width:100%; height:75px; 
+        background:black; z-index:20; pointer-events:none; display:none; 
+    }
 
-        /* യൂട്യൂബ് പ്ലെയർ */
-        #yt-frame { width: 100%; height: 100vh; border: none; display: none; position: absolute; top: 0; left: 0; z-index: 10; }
-    </style>
+    /* iframe - ഇവിടെ നമ്മൾ ഒരു സെർച്ച് റിസൾട്ട് പേജ് ആണ് നൽകുന്നത് */
+    #yt-frame { width:100%; height:100vh; border:none; display:none; position:absolute; top:0; left:0; z-index:10; }
+</style>
 </head>
 <body>
 
-    <video id="splash" autoplay muted playsinline>
-        <source src="logo123.mp4" type="video/mp4">
-    </video>
+<video id="splash" autoplay muted playsinline>
+    <source src="logo123.mp4" type="video/mp4">
+</video>
 
-    <div id="overlay" class="top-overlay"></div>
+<div id="overlay" class="top-overlay"></div>
 
-    <iframe id="yt-frame" src="https://www.youtube.com/embed?listType=playlist&list=PLhpN_sqvdfT_uF8mS_n32u6q6X_P8q-qJ"></iframe>
+<iframe id="yt-frame" src="https://www.youtube.com/embed?mode=opaque"></iframe>
 
-    <script>
-        const video = document.getElementById('splash');
-        const iframe = document.getElementById('yt-frame');
-        const overlay = document.getElementById('overlay');
+<script>
+const video = document.getElementById('splash');
+const iframe = document.getElementById('yt-frame');
+const overlay = document.getElementById('overlay');
 
-        function startApp() {
-            video.style.display = 'none';
-            iframe.style.display = 'block';
-            overlay.style.display = 'block';
-        }
+function showApp() {
+    video.style.display = 'none';
+    iframe.style.display = 'block';
+    overlay.style.display = 'block';
+}
 
-        video.addEventListener('ended', startApp);
-        video.addEventListener('error', startApp);
-        setTimeout(() => { if(video.style.display !== 'none') startApp(); }, 6000);
-    </script>
+video.addEventListener('ended', showApp);
+video.addEventListener('error', showApp);
+setTimeout(showApp, 6000);
+</script>
 
 </body>
 </html>
