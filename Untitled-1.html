@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>Professional App UI - Firefox Only</title>
+
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+
+html, body { width:100%; height:100%; overflow:hidden; font-family: system-ui, -apple-system, sans-serif; background:#f5f2ed; }
+
+#mask { position:fixed; top:0; left:0; width:100%; height:72px; background: linear-gradient(to bottom,#f5f2ed 0%,#f5f2ed 70%,rgba(245,242,237,0) 100%); z-index:100; pointer-events:none; }
+
+#splash { position:fixed; top:0; left:0; width:100%; height:100%; background:black; z-index:50; }
+#splash video { width:100%; height:100%; object-fit:cover; display:block; }
+
+#app { position:fixed; top:0; left:0; width:100%; height:100%; display:none; background:#ffffff; z-index:40; }
+#app iframe { width:100%; height:100%; border:none; display:block; }
+
+#error-message { display:none; position:fixed; inset:0; background:#ffeded; color:#900; font-size:1.4rem; text-align:center; padding:20px; z-index:200; display:flex; align-items:center; justify-content:center; }
+
+#debug { position:fixed; bottom:0; left:0; width:100%; background:rgba(0,0,0,0.7); color:#fff; font-size:12px; padding:5px; z-index:300; font-family:monospace; }
+
+@media (prefers-color-scheme: dark) {
+  html, body { background:#0f0f0f; }
+  #mask { background: linear-gradient(to bottom,#0f0f0f 0%,#0f0f0f 70%,rgba(15,15,15,0) 100%);}
+  #app { background:#0f0f0f; }
+  #error-message { background:#2b0b0b; color:#ff5a5a;}
+}
+</style>
+</head>
+
+<body>
+
+<div id="mask"></div>
+
+<div id="splash">
+  <video id="splashVideo" autoplay muted playsinline>
+    <source src="logo123.mp4" type="video/mp4">
+  </video>
+</div>
+
+<div id="app">
+  <iframe src="https://m.youtube.com"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+    allowfullscreen></iframe>
+</div>
+
+<div id="error-message">
+  <div>
+    <h2>Please use Firefox to access this app.</h2>
+    <p>Other browsers are not supported.</p>
+  </div>
+</div>
+
+<div id="debug"></div>
+
+<script>
+const video  = document.getElementById("splashVideo");
+const splash = document.getElementById("splash");
+const app    = document.getElementById("app");
+const error  = document.getElementById("error-message");
+const debug  = document.getElementById("debug");
+
+// ===== Hide error always initially =====
+error.style.display = "none";
+
+const ua = navigator.userAgent.toLowerCase();
+const isFirefox = ua.includes("firefox");
+
+// ===== Debug overlay init =====
+debug.innerHTML = `<b>Browser:</b> ${isFirefox ? 'Firefox' : 'Not Firefox'}<br><b>Status:</b> Initializing`;
+
+if(!isFirefox){
+  // Non-Firefox → show error
+  splash.style.display = "none";
+  app.style.display = "none";
+  error.style.display = "flex";
+  debug.innerHTML = `<b>Browser:</b> Not Firefox<br><b>Status:</b> Access blocked`;
+} else {
+  // Firefox → clean fullscreen, hide error
+  splash.style.display = "block";
+  app.style.display = "none";
+  error.style.display = "none";
+
+  debug.innerHTML = `<b>Browser:</b> Firefox<br><b>Status:</b> Splash playing`;
+
+  let splashHandled = false;
+
+  function showApp(statusMsg){
+    if(splashHandled) return;
+    splashHandled = true;
+    splash.style.display = "none";
+    app.style.display = "block";
+    debug.innerHTML = `<b>Browser:</b> Firefox<br><b>Status:</b> ${statusMsg}`;
+  }
+
+  // Video ended
+  video.addEventListener("ended", ()=>{
+    showApp("Splash ended → Main app shown");
+  });
+
+  // Video error / missing
+  video.addEventListener("error", ()=>{
+    showApp("Video missing → skipping splash");
+  });
+
+  // Autoplay fallback
+  setTimeout(()=>{
+    if(video.paused && !splashHandled){
+      showApp("Autoplay failed → skipping splash");
+    }
+  },7000);
+}
+</script>
+
+</body>
+</html>
