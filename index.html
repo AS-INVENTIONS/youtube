@@ -5,73 +5,45 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>YouTube Pro</title>
 <style>
-    body, html { margin:0; padding:0; height:100%; overflow:hidden; background:black; color: white; font-family: sans-serif; }
-    
-    /* എറർ മെസ്സേജ് സ്റ്റൈൽ */
-    #error-screen {
-        display: none; height: 100vh; width: 100%;
-        justify-content: center; align-items: center;
-        text-align: center; background: #1a1a1a; padding: 20px;
-    }
-
-    /* സ്പ്ലാഷ് വീഡിയോ */
-    #splash { width:100%; height:100vh; object-fit:cover; position:absolute; z-index:30; display:none; }
-
-    /* സെർച്ച് തടയാനുള്ള അദൃശ്യ പാളി */
-    .invisible-blocker { 
-        position:absolute; top:0; left:0; width:100%; height:60px; 
-        background: transparent; z-index:25; display:none; 
-    }
-
-    #yt-frame { width:100%; height:100vh; border:none; display:none; position:absolute; top:0; left:0; z-index:10; }
+    body, html { margin:0; padding:0; height:100%; overflow:hidden; background:black; color: white; text-align: center; font-family: sans-serif; }
+    #error-screen { display: none; height: 100vh; justify-content: center; align-items: center; padding: 20px; }
+    #splash { width:100%; height:100vh; object-fit:cover; position:absolute; z-index:10; display:none; }
 </style>
 </head>
 <body>
 
 <div id="error-screen">
     <h2>Access Denied!</h2>
-    <p>ഈ ആപ്പ് ഉപയോഗിക്കാൻ ദയവായി Firefox ബ്രൗസർ ഉപയോഗിക്കുക.</p>
+    <p>ഈ ആപ്പ് ഉപയോഗിക്കാൻ ദയവായി Firefox ഉപയോഗിക്കുക.</p>
 </div>
 
 <video id="splash" autoplay muted playsinline>
     <source src="logo123.mp4" type="video/mp4">
 </video>
 
-<div id="blocker" class="invisible-blocker"></div>
-
-<iframe id="yt-frame" src="https://m.youtube.com"></iframe>
-
 <script>
 const video = document.getElementById('splash');
-const iframe = document.getElementById('yt-frame');
-const blocker = document.getElementById('blocker');
 const errorScreen = document.getElementById('error-screen');
 
-// ബ്രൗസർ ഫയർഫോക്സ് ആണോ എന്ന് നോക്കുന്നു
 const userAgent = navigator.userAgent.toLowerCase();
 const isFirefox = userAgent.includes("firefox");
 
 if (isFirefox) {
-    // ഫയർഫോക്സ് ആണെങ്കിൽ വീഡിയോ കാണിക്കുന്നു
     video.style.display = 'block';
 
-    function showApp() {
-        video.style.display = 'none';
-        iframe.style.display = 'block';
-        blocker.style.display = 'block';
+    function openYT() {
+        // Iframe ഒഴിവാക്കി നേരിട്ട് യൂട്യൂബ് ലോഡ് ചെയ്യുന്നു
+        window.location.replace("https://m.youtube.com");
     }
 
-    video.addEventListener('ended', showApp);
-    video.addEventListener('error', showApp);
-    setTimeout(() => { if(video.style.display !== 'none') showApp(); }, 6000);
+    video.addEventListener('ended', openYT);
+    video.addEventListener('error', openYT);
+    setTimeout(openYT, 6000); 
 
 } else {
-    // ഫയർഫോക്സ് അല്ലെങ്കിൽ എറർ സ്ക്രീൻ മാത്രം കാണിക്കുന്നു
     errorScreen.style.display = 'flex';
-    video.remove(); // വീഡിയോ ഡിലീറ്റ് ചെയ്യുന്നു
-    iframe.remove(); // ഫ്രെയിം ഡിലീറ്റ് ചെയ്യുന്നു
+    video.remove();
 }
 </script>
-
 </body>
 </html>
