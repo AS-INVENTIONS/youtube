@@ -5,27 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>YouTube Pro</title>
     <style>
-        body, html { 
-            margin: 0; padding: 0; height: 100%; overflow: hidden; background: black; 
-        }
-
-        /* സ്പ്ലാഷ് വീഡിയോ */
-        #splash { 
-            width: 100%; height: 100vh; object-fit: cover; 
-            position: absolute; z-index: 30; 
-        }
-
-        /* സെർച്ച് ബാർ മറയ്ക്കാനുള്ള കറുത്ത ഓവർലേ */
+        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background: black; }
+        #splash { width: 100%; height: 100vh; object-fit: cover; position: absolute; z-index: 30; }
+        
+        /* സെർച്ച് ബട്ടൺ മറയ്ക്കാനുള്ള കറുത്ത ബാർ */
         .top-overlay { 
-            position: absolute; top: 0; left: 0; width: 100%; height: 65px; 
+            position: absolute; top: 0; left: 0; width: 100%; height: 70px; 
             background: black; z-index: 20; pointer-events: none; display: none; 
         }
 
-        /* യൂട്യൂബ് കണ്ടന്റ് */
-        #yt-frame { 
-            width: 100%; height: 100vh; border: none; 
-            display: none; position: absolute; top: 0; left: 0; z-index: 10; 
-        }
+        /* യൂട്യൂബ് പ്ലെയർ */
+        #yt-frame { width: 100%; height: 100vh; border: none; display: none; position: absolute; top: 0; left: 0; z-index: 10; }
     </style>
 </head>
 <body>
@@ -36,7 +26,7 @@
 
     <div id="overlay" class="top-overlay"></div>
 
-    <iframe id="yt-frame" src="https://www.youtube.com/embed?rel=0&showinfo=0&autohide=1"></iframe>
+    <iframe id="yt-frame" src="https://www.youtube.com/embed?listType=playlist&list=PLhpN_sqvdfT_uF8mS_n32u6q6X_P8q-qJ"></iframe>
 
     <script>
         const video = document.getElementById('splash');
@@ -44,21 +34,14 @@
         const overlay = document.getElementById('overlay');
 
         function startApp() {
-            video.style.display = 'none'; // വീഡിയോ മറയ്ക്കുന്നു
-            iframe.style.display = 'block'; // യൂട്യൂബ് കാണിക്കുന്നു
-            overlay.style.display = 'block'; // ഓവർലേ കാണിക്കുന്നു
+            video.style.display = 'none';
+            iframe.style.display = 'block';
+            overlay.style.display = 'block';
         }
 
-        // വീഡിയോ അവസാനിക്കുമ്പോൾ ആപ്പ് ലോഡ് ചെയ്യും
         video.addEventListener('ended', startApp);
-
-        // എന്തെങ്കിലും കാരണവശാൽ വീഡിയോ ലോഡ് ആയില്ലെങ്കിൽ 6 സെക്കൻഡിൽ ആപ്പ് ലോഡ് ചെയ്യും
-        setTimeout(() => {
-            if(video.style.display !== 'none') startApp();
-        }, 6000);
-
-        // വീഡിയോയിൽ എറർ വന്നാലും ആപ്പ് ലോഡ് ചെയ്യും
         video.addEventListener('error', startApp);
+        setTimeout(() => { if(video.style.display !== 'none') startApp(); }, 6000);
     </script>
 
 </body>
