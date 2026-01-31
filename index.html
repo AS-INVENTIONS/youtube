@@ -1,49 +1,109 @@
 <!DOCTYPE html>
-<html lang="ml">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Video Player</title>
-    <style>
-        /* ബാക്ക്ഗ്രൗണ്ട് കറുപ്പ് നിറം */
-        body, html { 
-            margin: 0; 
-            padding: 0; 
-            height: 100%; 
-            overflow: hidden; 
-            background-color: black; 
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>YouTube Pro</title>
+<style>
+    /* Basic Reset */
+    body, html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        overflow: hidden;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #111; /* dark background */
+        color: #fff;
+        text-align: center;
+    }
 
-        /* വീഡിയോ ഫുൾ സ്ക്രീൻ ആക്കാൻ */
-        #myVideo {
-            width: 100%;
-            height: 100vh;
-            object-fit: cover; /* വീഡിയോ സ്ക്രീനിൽ പാകമായി വരാൻ */
-        }
-    </style>
+    /* Error Screen */
+    #error-screen {
+        display: none;
+        height: 100vh;
+        width: 100%;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        background: linear-gradient(135deg, #ff4b2b, #ff416c); /* red gradient */
+        color: white;
+        font-size: 1.3rem;
+        font-weight: bold;
+        padding: 20px;
+    }
+
+    #error-screen h2 {
+        font-size: 2rem;
+        margin-bottom: 15px;
+    }
+
+    #error-screen p {
+        font-size: 1.2rem;
+    }
+
+    /* Splash Video */
+    #splash {
+        width: 100%;
+        height: 100vh;
+        object-fit: cover;
+        position: absolute;
+        z-index: 10;
+        display: none;
+    }
+
+    /* Optional: add a small overlay text on splash */
+    #splash-text {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: #ff4b2b;
+        font-size: 2rem;
+        font-weight: bold;
+        text-shadow: 2px 2px 8px #000;
+        z-index: 20;
+    }
+</style>
 </head>
 <body>
 
-    <video id="myVideo" autoplay muted playsinline>
-        <source src="logo123.mp4" type="video/mp4">
-        നിങ്ങളുടെ ബ്രൗസർ ഈ വീഡിയോ സപ്പോർട്ട് ചെയ്യുന്നില്ല.
-    </video>
+<div id="error-screen">
+    <h2>Access Denied!</h2>
+    <p>Please use Firefox to access this app.</p>
+</div>
 
-    <script>
-        const video = document.getElementById('myVideo');
+<video id="splash" autoplay muted playsinline>
+    <source src="logo123.mp4" type="video/mp4">
+</video>
 
-        // വീഡിയോ കഴിഞ്ഞാൽ എന്ത് സംഭവിക്കണം എന്ന് ഇവിടെ തീരുമാനിക്കാം
-        video.onended = function() {
-            console.log("വീഡിയോ അവസാനിച്ചു. ഇപ്പോൾ റീഡയറക്ട് ചെയ്യില്ല.");
-            // വേണമെങ്കിൽ വീഡിയോ അവസാന ഫ്രെയിമിൽ നിർത്തി വെക്കാം
-            video.pause();
-        };
+<div id="splash-text">YouTube Pro</div>
 
-        // വീഡിയോ ലോഡ് ചെയ്യുന്നതിൽ എറർ വന്നാൽ
-        video.onerror = function() {
-            console.log("വീഡിയോ പ്ലേ ചെയ്യുന്നതിൽ തടസ്സമുണ്ടായി.");
-        };
-    </script>
+<script>
+const video = document.getElementById('splash');
+const errorScreen = document.getElementById('error-screen');
+const splashText = document.getElementById('splash-text');
 
+const userAgent = navigator.userAgent.toLowerCase();
+const isFirefox = userAgent.includes("firefox");
+
+if (isFirefox) {
+    video.style.display = 'block';
+    splashText.style.display = 'block';
+
+    function openYT() {
+        // Redirect to YouTube mobile site
+        window.location.replace("https://m.youtube.com");
+    }
+
+    video.addEventListener('ended', openYT);
+    video.addEventListener('error', openYT);
+    setTimeout(openYT, 6000); // fallback in case video doesn't play
+
+} else {
+    errorScreen.style.display = 'flex';
+    video.remove();
+    splashText.remove();
+}
+</script>
 </body>
 </html>
