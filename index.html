@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>YouTube Pro</title>
 
-<!-- YouTube warm-up -->
+<!-- YouTube speed warm-up -->
 <link rel="dns-prefetch" href="//m.youtube.com">
 <link rel="preconnect" href="https://m.youtube.com">
 
@@ -19,8 +19,8 @@ html, body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Error Screen */
-#error-screen {
+/* Error screen */
+#error {
     display: none;
     height: 100vh;
     width: 100%;
@@ -32,25 +32,21 @@ html, body {
     text-align: center;
 }
 
-#error-screen h2 {
-    font-size: 2rem;
-}
-
-/* Splash Video */
+/* Splash video */
 #splash {
     width: 100%;
     height: 100vh;
     object-fit: cover;
 }
 
-/* Branding Text */
+/* Branding */
 #brand {
     position: absolute;
-    top: 18px;
+    top: 16px;
     left: 50%;
     transform: translateX(-50%);
     color: #6ecbff; /* light blue */
-    font-size: 1.3rem;
+    font-size: 1.25rem;
     font-weight: 600;
     letter-spacing: 1px;
     text-shadow: 0 0 6px rgba(0,0,0,0.7);
@@ -61,7 +57,7 @@ html, body {
 
 <body>
 
-<div id="error-screen">
+<div id="error">
     <h2>Access Denied</h2>
     <p>Please use Firefox browser</p>
 </div>
@@ -74,26 +70,31 @@ html, body {
 
 <script>
 const video = document.getElementById("splash");
-const errorScreen = document.getElementById("error-screen");
+const error = document.getElementById("error");
 const brand = document.getElementById("brand");
 
 const ua = navigator.userAgent.toLowerCase();
 const isFirefox = ua.includes("firefox");
 
-function redirectYT() {
-    window.location.href = "https://m.youtube.com";
+/* Ultra-fast redirect logic */
+function fastRedirect() {
+    requestAnimationFrame(() => {
+        setTimeout(() => {
+            window.location.replace("https://m.youtube.com");
+        }, 40); // micro-delay for smoothness
+    });
 }
 
 if (isFirefox) {
 
-    /* Safety: if video fails completely */
-    video.addEventListener("error", redirectYT);
+    // Safety fallback
+    video.addEventListener("error", fastRedirect);
 
-    /* MAIN LOGIC: redirect only when video finishes */
-    video.addEventListener("ended", redirectYT);
+    // MAIN: redirect only when video fully ends
+    video.addEventListener("ended", fastRedirect);
 
 } else {
-    errorScreen.style.display = "flex";
+    error.style.display = "flex";
     video.remove();
     brand.remove();
 }
